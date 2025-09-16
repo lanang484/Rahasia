@@ -112,6 +112,24 @@
         opacity: 0;
       }
     }
+    .reply {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  background: #ffe6f7;
+  border-radius: 1rem;
+  text-align: left;
+  font-size: 1rem;
+  color: #d63384;
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reply.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
   </style>
 </head>
 <body>
@@ -131,6 +149,10 @@
       <button onclick="sendYes()">Ya 💌</button>
       <button onclick="sendNo()">Tidak 🙅‍♀️</button>
     </div>
+    <div>
+        <div id="reply" class="reply"></div>
+
+    </div>
   </div>
 
   <script>
@@ -140,7 +162,7 @@
       "Kalau boleh jujur, {nama}… aku pengen ada di sisimu lebih lama 💕",
       "Hei {nama}, dunia jadi lebih berwarna sejak aku kenal kamu 🌈",
       "{nama}, bolehkah aku jadi alasan di balik tawamu? 💖",
-       "mau kah kamu menjadi pacar ku wahai putri{nama}, ? 💖"
+       "mau kah kamu menjadi pacar ku wahai putri {nama}, ? 💖"
     ];
 
     let lastMessage = "";
@@ -175,10 +197,18 @@
       createHearts();
     }
 
-    function sendYes() {
-      const waLink = `https://wa.me/${lastNumber}?text=${encodeURIComponent(lastMessage)}`;
-      window.open(waLink, "_blank");
-    }
+  function sendYes() {
+  const extraText = "\n\n aku mau 💌";
+  const waLink = `https://wa.me/${lastNumber}?text=${encodeURIComponent(lastMessage + extraText)}`;
+  window.open(waLink, "_blank");
+
+  // Munculkan balasan otomatis di website
+  const replyDiv = document.getElementById("reply");
+  replyDiv.textContent = "Dia: Ya 💖";
+  replyDiv.classList.add("show");
+}
+
+
 
     function sendNo() {
       document.getElementById("result").textContent = "Oke deh, coba klik Kirim Pesan lagi 😊";
