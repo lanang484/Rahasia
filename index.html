@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pesan Romantis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      overflow: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(-45deg, #ffd1dc, #ffe6f7, #e0bbff, #ffc8dd);
+      background-size: 400% 400%;
+      animation: gradientMove 15s ease infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .bg-heart {
+      position: absolute;
+      color: rgba(255, 77, 109, 0.15);
+      font-size: 120px;
+      animation: pulse 6s ease-in-out infinite;
+      z-index: 0;
+      user-select: none;
+    }
+    .bg-heart:nth-child(1) { top: 10%; left: 15%; }
+    .bg-heart:nth-child(2) { top: 60%; left: 70%; animation-delay: 2s; }
+    .bg-heart:nth-child(3) { top: 30%; left: 80%; animation-delay: 4s; }
+    .bg-heart:nth-child(4) { top: 75%; left: 20%; animation-delay: 1s; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 320px;
+      z-index: 2;
+      position: relative;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #d63384;
+    }
+    input {
+      padding: 0.6rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 0.7rem;
+      background: #d63384;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      margin: 0.3rem;
+    }
+    button:hover {
+      background: #b82d6c;
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: #444;
+      min-height: 2rem;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .result.show {
+      opacity: 1;
+      transform: scale(1);
+      color: #b82d6c;
+    }
+
+    .choice-buttons {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .heart {
+      position: absolute;
+      top: -10px;
+      color: #ff4d6d;
+      font-size: 20px;
+      animation: fall linear forwards;
+      z-index: 1;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- hearts samar -->
+  <div class="bg-heart">💖</div>
+  <div class="bg-heart">💖</div>
+  <div class="bg-heart">💖</div>
+  <div class="bg-heart">💖</div>
+
+  <div class="card">
+    <h1>💖 Pesan Manis Buat Si Dia 💖</h1>
+    <input id="nama" type="text" placeholder="Masukkan namanya...">
+    <input id="nomor" type="text" placeholder="Nomor WhatsApp (628xx)...">
+    <button onclick="generateMessage()">Kirim Pesan</button>
+    <div class="result" id="result"></div>
+    <div class="choice-buttons" id="choice">
+      <button onclick="sendYes()">Ya 💌</button>
+      <button onclick="sendNo()">Tidak 🙅‍♀️</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = [
+      "Hai {nama}, aku cuma mau bilang... kamu bikin hariku jadi lebih indah 🌸",
+      "{nama}, senyummu itu alasan kenapa aku semangat tiap hari ✨",
+      "Kalau boleh jujur, {nama}… aku pengen ada di sisimu lebih lama 💕",
+      "Hei {nama}, dunia jadi lebih berwarna sejak aku kenal kamu 🌈",
+      "{nama}, bolehkah aku jadi alasan di balik tawamu? 💖",
+       "mau kah kamu menjadi pacar ku wahai putri{nama}, ? 💖"
+    ];
+
+    let lastMessage = "";
+    let lastNumber = "";
+
+    function generateMessage() {
+      const nama = document.getElementById("nama").value.trim();
+      const nomor = document.getElementById("nomor").value.trim();
+      const resultDiv = document.getElementById("result");
+      const choiceDiv = document.getElementById("choice");
+
+      if (!nama || !nomor) {
+        resultDiv.textContent = "Isi dulu nama dan nomor WA ya 😉";
+        resultDiv.classList.add("show");
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      lastMessage = messages[randomIndex].replace("{nama}", nama);
+      lastNumber = nomor;
+
+      // Tampilkan pesan
+      resultDiv.classList.remove("show");
+      void resultDiv.offsetWidth;
+      resultDiv.textContent = lastMessage;
+      resultDiv.classList.add("show");
+
+      // Tampilkan pilihan Ya/Tidak
+      choiceDiv.style.display = "block";
+
+      // Animasi hati
+      createHearts();
+    }
+
+    function sendYes() {
+      const waLink = `https://wa.me/${lastNumber}?text=${encodeURIComponent(lastMessage)}`;
+      window.open(waLink, "_blank");
+    }
+
+    function sendNo() {
+      document.getElementById("result").textContent = "Oke deh, coba klik Kirim Pesan lagi 😊";
+      document.getElementById("choice").style.display = "none";
+    }
+
+    function createHearts() {
+      for (let i = 0; i < 6; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.textContent = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>
